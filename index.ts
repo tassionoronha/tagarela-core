@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+const removeDiacritics = require('diacritics').remove;
 
 const userTrain = {
   tableName: 'users',
@@ -9,12 +10,22 @@ const userTrain = {
   ]
 }
 
+class Operators{
+  private field: string;
+  private comparator: string;
+  private searched: any; // string or integer
+}
+
 class Tagarela{
   private text: string;
   private words: Array<String>;
   private model: any;
   private excess: Array<String>;
+  private triggerProjections: Array<String>;
   private models: Array<any>;
+  private diacritics: any;
+  private projections: Array<String>;
+  private clausules: Array<Operators>;
 
   constructor(text:string){
     this.text = text;
@@ -22,6 +33,8 @@ class Tagarela{
     this.models = [];
     this.model = false;
     this.excess = ['a', 'o', 'dos', 'que', 'tem', 'do', 'da'];
+    this.triggerProjections = ['qual', 'quais', 'exiba', 'mostre', 'busque', 'retorne'];
+    this.diacritics = removeDiacritics;
   }
 
   public addModel(model: Object){
@@ -29,7 +42,9 @@ class Tagarela{
   }
 
   public tokenizer(): void{
-    this.words = this.text.split(" ");
+    this.words = this.text
+      .split(" ")
+      .map(elem => {return this.diacritics(elem)});
   }
 
   public removeExcess(){
@@ -39,7 +54,7 @@ class Tagarela{
   }
 
   private setModel(string: String){
-    this.model = _.reduce(this.models, function(context, n) {
+    this.model = _.reduce(this.models, (context, n) => {
       return (context == false && n.tableName == string || n.synonymes.includes(string)) ? n.tableName : context;
     }, this.model);
   }
@@ -49,12 +64,26 @@ class Tagarela{
       this.setModel(elem);
     });
   }
+
+  public getModelFields(){
+    return this.models
+      .filter(x => x.tableName == this.model)
+      .map(x => x.fields) || null;
+  }
+
+  public getFields(){
+    let fields = this.getModelFields()[0];
+    this.projections = _.reduce(this.words,(context, n)=>{
+      let sn = _.find(fields, {'fieldName':n}) || _.find(fields, _.iteratee(['synonymes', [n]]));
+      return (sn) ? _.concat(context, sn.fieldName) : context;
+    },[])
+  }
 }
 
 
-var text = new Tagarela('qual o nome dos usuarios que são do estado da Bahia?');
+var text = new Tagarela('qual o name dos usuários que são do estado da Bahia?');
 text.addModel(userTrain);
 text.tokenizer();
 text.removeExcess();
 text.getModel();
-console.log(text);
+text.getFields();
