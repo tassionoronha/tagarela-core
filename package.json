@@ -1,0 +1,14 @@
+{
+  "name": "tagarela-core",
+  "version": "1.0.0",
+  "description": "npl to query ",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tássio Noronha",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.5"
+  }
+}
