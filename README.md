@@ -10,7 +10,7 @@ O Tagarela tem uma simples missão de auxiliar no tratamento de linguagem natura
 
 ```
 var text = new Tagarela('qual a cidade e o email do usuario com nome Tassio Noronha');
-console.log(text.getQuery()); // SELECT city, email FROM users WHERE name = Tassio Noronha
+console.log(text.getQuery()); // SELECT city, email FROM users WHERE name = "Tassio Noronha"
 ```
 
 ### Instalando
