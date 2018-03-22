@@ -1,2 +1,4 @@
 node_modules/
 tests.ts
+.gitignore
+build/
