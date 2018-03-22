@@ -15,17 +15,18 @@ console.log(text.getQuery()); // SELECT city, email FROM users WHERE name = Tass
 
 ### Instalando
 
-Clone o projeto.
-
+Clone o projeto e instale as dependências
 ```
+git clone https://github.com/tassionoronha/tagarela-core
 npm install
 ```
 
 ## Rodando os testes
 
-Rode o seguinte comando
+Compile o projeto com o comando 'tsc' e em seguida rode os testes:
 
 ```
+tsc
 npm test
 ```
 
