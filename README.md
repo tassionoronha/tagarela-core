@@ -21,6 +21,12 @@ git clone https://github.com/tassionoronha/tagarela-core
 npm install
 ```
 
+### Executando
+
+```
+ts-node index.ts
+```
+
 ## Rodando os testes
 
 Compile o projeto com o comando 'tsc' e em seguida rode os testes:
