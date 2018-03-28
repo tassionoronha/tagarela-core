@@ -61,18 +61,13 @@ export class Tagarela{
     });
   }
 
-  private setModel(string: String): void{
-    this.model = _.reduce(this.models, (context, n) => {
-      return (context == false && n.tableName == string || n.synonymes.includes(string)) ? n.tableName : context;
-    }, this.model);
-  }
-
   public searchModels(): void{
-    this.words.forEach(elem => {
-      this.setModel(elem);
-    });
+    this.model = _.map(this.words, el => _.reduce(this.models, (context, n) => {
+      return (context == false && n.tableName == el || n.synonymes.includes(el)) ? n.tableName : context;
+    }, null)).reduce((c,el) => (el) ? el : c);
   }
 
+  //TO DO - adicionar possibilidade de pegar campos de todos os models; change this.model -> includes(this.model)
   public getModelFields(){
     return this.models
       .filter(x => x.tableName == this.model)
@@ -121,11 +116,12 @@ export class Tagarela{
     this.projections = this.getFields(array);
   }
 
+  //Evitar interpretação de clausula como campo a ser projetado
   public removeClausulesOfProjections(): void{
-    let clausulesFields = _.map(this.clausules, (c) => c.field);
+    let clausulesFields = _.map(this.clausules, c => c.field);
     let projections = this.projections;
     _.each(clausulesFields, (o) => {
-      projections.splice(_.findLastKey(projections, (a)=>{ return o == a}), 1);
+      projections.splice(_.findLastKey(projections, a => o == a), 1);
     });
     this.projections = projections;
   }
@@ -158,10 +154,10 @@ export class Tagarela{
     _.each(elems, (value, key)=> {
       string += (_.size(elems) < key+2) ? value : value + " AND ";
     })
-    return ' WHERE ' + string;
+    return (string !== "") ? ` WHERE ${string}` : "";
   }
 
   public getQuery(): String{
-    return 'SELECT' + this.makeProjections() + ' FROM ' + this.model + this.makeClausules();
+    return `SELECT${this.makeProjections()} FROM ${this.model + this.makeClausules()}`;
   }
 }
