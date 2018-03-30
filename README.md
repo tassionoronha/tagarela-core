@@ -44,6 +44,7 @@ npm test
 ## Check-list de prioridades
 
 * Importação de modelos via YAML
+* Refatorar extractClausulesAndValues para receber a entidade a ser extraída e os padrões a serem procurados
 * Melhorar importação de dependências da língua
 * Função de '<','>'
 * Função do ORDER
