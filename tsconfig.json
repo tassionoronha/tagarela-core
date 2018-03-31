@@ -11,9 +11,9 @@
     ]
   },
   "include": [
-    "tests/**/*.ts",
-    "classes/*.ts",
     "models/*.ts",
+    "classes/*.ts",
+    "tests/**/*.ts"
   ],
   "exclude": [
     "node_modules"
