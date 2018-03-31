@@ -51,3 +51,25 @@ describe('Testes unitários da Classe Tagarela', () => {
       expect(text.getInferences()).to.contain('tem');
     });
 });
+
+describe('Testes geração de Queries', () => {
+  it('Queries sem projeção e sem claúsulas', () => {
+    let textExample = new Tagarela('exiba meus usuarios');
+    expect(textExample.getQuery()).eql('SELECT * FROM users');
+  });
+
+  it('Queries com projeção e sem claúsulas', () => {
+    let textExample = new Tagarela('exiba o nome de todos usuarios');
+    expect(textExample.getQuery()).eql('SELECT name FROM users');
+  });
+  
+  it('Queries sem projeção e com claúsulas', () => {
+    let textExample = new Tagarela('exiba usuarios com o nome Tassio');
+    expect(textExample.getQuery()).eql('SELECT * FROM users WHERE name = "Tassio"');
+  });
+
+  it('Queries com projeção e com claúsulas', () => {
+    let textExample = new Tagarela('exiba o email dos usuarios com o nome Tassio');
+    expect(textExample.getQuery()).eql('SELECT email FROM users WHERE name = "Tassio"');
+  });
+});
