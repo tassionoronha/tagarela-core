@@ -7,9 +7,9 @@ import { Operator } from './Operator';
 export class Tagarela{
   private text: string;
   private words: Array<String>;
-  private model: any;
+  private tables: any;
   private excess: Array<String>;
-  private triggerProjections: Array<String>;
+  private triggerProjections: Array<String>; // validar importancia do campo
   private models: Array<any>;
   private diacritics: any;
   private projections: Array<String>;
@@ -21,7 +21,7 @@ export class Tagarela{
     this.words = [];
     this.models = [];
     this.clausules = [];
-    this.model = false;
+    this.tables= false;
     //this.excess = ['a', 'o', 'dos', 'que', 'tem', 'do', 'da', 'qual', 'quais', 'exiba', 'mostre', 'busque', 'retorne'];
     this.excess = ['a', 'o', 'dos', 'das', 'que', 'do', 'da', 'de', 'igual'];
     this.inferences = ['sao', 'contem', 'é', 'tem', 'com'];
@@ -40,9 +40,40 @@ export class Tagarela{
     this.removeClausulesOfProjections();
   }
 
+  public getText(): String{
+    return this.text;
+  }
+
+  public getTables(): String{
+    return this.tables;
+  }
+
+  public getExcess(): Array<String>{
+    return this.excess;
+  }
+
+  public getModels(): Array<any>{
+    return this.models;
+  }
+
+  public getProjections(): Array<String>{
+    return this.projections;
+  }
+
+  public getClausules(): Array<Operator>{
+    return this.clausules;
+  }
+
+  public getInferences(): Array<String>{
+    return this.inferences;
+  }
+
+  public getWords(): Array<String>{
+    return this.words;
+  }
+
   public addModel(model: Object){
     this.models.push(model);
-    return this.models;
   }
 
   public addClausule(clausule: Operator): void{
@@ -62,15 +93,15 @@ export class Tagarela{
   }
 
   public searchModels(): void{
-    this.model = _.map(this.words, el => _.reduce(this.models, (context, n) => {
+    this.tables= _.map(this.words, el => _.reduce(this.models, (context, n) => {
       return (context == false && n.tableName == el || n.synonymes.includes(el)) ? n.tableName : context;
     }, null)).reduce((c,el) => (el) ? el : c);
   }
 
-  //TO DO - adicionar possibilidade de pegar campos de todos os models; change this.model -> includes(this.model)
+  //TO DO - adicionar possibilidade de pegar campos de todos os models; change this.tables-> includes(this.model)
   public getModelFields(){
     return this.models
-      .filter(x => x.tableName == this.model)
+      .filter(x => x.tableName == this.tables)
       .map(x => x.fields);
   }
 
@@ -126,10 +157,6 @@ export class Tagarela{
     this.projections = projections;
   }
 
-  public getWords(): Array<String>{
-    return this.words;
-  }
-
   public makeProjections(): String{
     return (_.size(this.projections)) ? _.map(this.projections, (elem) => " " + elem) : ' *';
   }
@@ -158,6 +185,6 @@ export class Tagarela{
   }
 
   public getQuery(): String{
-    return `SELECT${this.makeProjections()} FROM ${this.model + this.makeClausules()}`;
+    return `SELECT${this.makeProjections()} FROM ${this.tables+ this.makeClausules()}`;
   }
 }
